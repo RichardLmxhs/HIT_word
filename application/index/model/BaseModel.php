@@ -71,6 +71,12 @@ class BaseModel extends Model
             $this->error['msg'] = '用户不存在';
             return $this->error;
         } else {
+            $res_role = Db::table('hit_role')->where('user_id',$user_id)->find();
+            if($res_role != null){
+                $this->error['state'] = -1;
+                $this->error['msg'] = '有属于该用户的角色，无法进行删除';
+                return $this->error;
+            }
             $res_word = Db::table("user_word")->where("user_id", $user_id)->find();
             if ($res_word != null) {
                 $this->error['state'] = -1;
@@ -121,13 +127,16 @@ class BaseModel extends Model
     /*
      * 文档查询
      */
-    protected function wordQuery($word_id){
-        return Db::table("hit_word")->where("word_id",$word_id)->find();
+    protected function wordQuery($word_id)
+    {
+        return Db::table("hit_word")->where("word_id", $word_id)->find();
     }
+
     /*
      * 文档上传
      */
-    protected function wordUpload($word_data){
+    protected function wordUpload($word_data)
+    {
         $data_ins = array(
             'word_id' => $word_data['word_id'],
             'word_name' => $word_data['word_name'],
@@ -138,10 +147,12 @@ class BaseModel extends Model
         );
         return Db::table("hit_word_process")->insert($data_ins);
     }
+
     /*
      * 文档修改
      */
-    protected function wordEdit($word_data){
+    protected function wordEdit($word_data)
+    {
         $data_update = array(
             'word_id' => $word_data['word_id'],
             'word_name' => $word_data['word_name'],
@@ -152,10 +163,12 @@ class BaseModel extends Model
         );
         return Db::table('hit_word_process')->update($data_update);
     }
+
     /*
      * 文档删除
      */
-    protected function wordDelete($word_id){
-        return Db::table('hit_word_process')->where("word_id",$word_id)->delete();
+    protected function wordDelete($word_id)
+    {
+        return Db::table('hit_word_process')->where("word_id", $word_id)->delete();
     }
 }
