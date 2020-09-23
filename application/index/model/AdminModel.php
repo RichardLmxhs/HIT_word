@@ -8,19 +8,19 @@ use think\Model;
 class AdminModel extends BaseModel
 {
     //管理员查询
-    protected function adminQuery($admin_id){
+    public function adminQuery($admin_id){
         return Db::table("hit_admin")->where("admin_id",$admin_id)->find();
     }
 
     //管理员登录
-    protected function adminLogin($admin_id, $admin_password){
+    public function adminLogin($admin_id, $admin_password){
         $admin_password = $this->encryptPassword($admin_password);
         $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("password");
         return $admin_password == $is_password ? true : false;
     }
 
     //管理员修改密码
-    protected function adminPasswordEdit($admin_id, $old_password, $new_password){
+    public function adminPasswordEdit($admin_id, $old_password, $new_password){
         $old_password = $this->encryptPassword($old_password);
         $new_password = $this->encryptPassword($new_password);
         $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("password");
@@ -37,7 +37,7 @@ class AdminModel extends BaseModel
     }
 
     //管理员添加用户
-    protected function adminAdd($data_add){
+    public function adminAdd($data_add){
         $is_exists = Db::table("hit_admin")->where('admin_id',$data_add['admin_id'])->find();
         if($is_exists != null){
             $this->error['state'] = -1;
@@ -53,7 +53,7 @@ class AdminModel extends BaseModel
     }
 
     //管理员删除用户
-    protected function adminDelete($admin_id){
+    public function adminDelete($admin_id){
         $is_exists = Db::table("hit_admin")->where('admin_id',$admin_id)->find();
         $is_null = Db::table('hit_admin')->select();
         if(count($is_null) == 1){
@@ -70,10 +70,10 @@ class AdminModel extends BaseModel
     }
 
     //部门查询
-    protected function depQueryById($dep_id){
+    public function depQueryById($dep_id){
         return Db::table("hit_department")->where("dep_id",$dep_id)->find();
     }
-    protected function depQueryByName($dep_name){
+    public function depQueryByName($dep_name){
         $res = Db::table("hit_department")->where("dep_name",$dep_name)->find();
         $ans = array();
         array_push($ans,$res);
@@ -84,7 +84,7 @@ class AdminModel extends BaseModel
         return $ans;
     }
     //添加部门
-    protected function depAdd($data_add){
+    public function depAdd($data_add){
         $data = array(
             'dep_name' => $data_add['dep_name'],
             'dep_place' => $data_add['dep_place'],
@@ -96,7 +96,7 @@ class AdminModel extends BaseModel
     }
 
     //修改部门信息
-    protected function depEdit($data_edit){
+    public function depEdit($data_edit){
         $data = array(
             'dep_name' => $data_edit['dep_name'],
             'dep_place' => $data_edit['dep_place'],
@@ -113,7 +113,7 @@ class AdminModel extends BaseModel
     }
 
     //删除部门
-    protected function depDelete($dep_name){
+    public function depDelete($dep_name){
         $is_null = Db::table('user_department')->where('dep_name',$dep_name)->find();
         if($is_null == null){
             return Db::table('hit_department')->where('dep_name',$dep_name)->delete();
@@ -125,12 +125,12 @@ class AdminModel extends BaseModel
     }
 
     //角色查询
-    protected function roleQuery(){
+    public function roleQuery(){
         return Db::table('hit_role')->group('role_name')->select();
     }
 
     //给用户分配角色
-    protected function roleAdd($data_add){
+    public function roleAdd($data_add){
         $is_exists = Db::table('hit_role')->where("role_user_id",$data_add['role_user_id'])->find();
         if($is_exists != null){
             $this->error['state'] = -1;
@@ -146,7 +146,7 @@ class AdminModel extends BaseModel
     }
 
     //剥夺某用户的角色
-    protected function roleDelete($user_id){
+    public function roleDelete($user_id){
         $is_exists = Db::table('hit_role')->where("role_user_id",$user_id)->find();
         if($is_exists == null){
             $this->error['state'] = -1;
