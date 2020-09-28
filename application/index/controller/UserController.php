@@ -93,17 +93,18 @@ class UserController extends Controller
         return $this->fetch('changePassword');
     }
 
-    public function userWorUpload()
+    public function userWordUpload()
     {
         // 获取表单上传文件
-        $file = request()->file('file');
+        $file = Request::instance()->file();
+        $file_info_1 = $file['file']->getInfo();
         $post = Request::instance()->post();
         if (empty($file)) {
             $this->error('请选择上传文件');
         }
         // 移动到框架应用根目录/public/uploads/ 目录下
         $file_info = [
-            'word_name' => $file['name'],
+            'word_name' => $file_info_1['name'],
             'word_place' => ROOT_PATH . 'public' . DS . 'uploads',
             'word_state' => $post['file_state'],
             'word_introduction' => $post['file_introduction'],

@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>文件上传示例</title>
 </head>
 <body>
-
+<h2>文件上传示例</h2>
+<FORM method="post" enctype="multipart/form-data" class="form" action="{:url('User/userWordUpload')}">选择文件：
+    <INPUT type="file" class="files" name="file"><br/>
+    <INPUT type="submit" class="btn" value=" 提交 ">
+</FORM>
 </body>
 </html>
