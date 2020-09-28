@@ -12,6 +12,9 @@ use think\Validate;
 
 class LoginController extends Controller
 {
+    public function index(){
+        return $this->fetch('admin/index');
+    }
     //用户登录
     public function userLogin()
     {
