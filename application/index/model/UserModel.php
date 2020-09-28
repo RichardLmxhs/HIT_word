@@ -49,7 +49,9 @@ class UserModel extends BaseModel
     //用户上传的文件查询
     function userWordQuery($user_id)
     {
-        return Db::table("user_word")->where('user_id', $user_id)->find();
+        return Db::table("user_word")
+            ->join("hit_word_process",'user_word.word_id = hit_word_process.word_id')
+            ->where('user_id', $user_id)->select();
     }
 
     //用户修改密码

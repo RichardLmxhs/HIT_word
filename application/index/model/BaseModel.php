@@ -22,7 +22,7 @@ class BaseModel extends Model
      * @param $user_id
      * @return array
      */
-    protected function userQuery($user_id)
+    public function userQuery($user_id)
     {
         return Db::table("hit_user")->where("user_id", $user_id)->find();
     }
@@ -101,7 +101,7 @@ class BaseModel extends Model
      * 用户修改
      * @param $user_data
      */
-    protected function userEdit($user_data)
+    public function userEdit($user_data)
     {
         $is_exist = Db::table('user_id')->where('user_id', $user_data["user_id"])->find();
         if ($is_exist == null) {
@@ -135,7 +135,7 @@ class BaseModel extends Model
     /*
      * 文档上传
      */
-    protected function wordUpload($word_data)
+    public function wordUpload($word_data)
     {
         $data_ins = array(
             'word_id' => $word_data['word_id'],
