@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>管理员登录</title>
     <link rel="stylesheet" type="text/css" href="\static\bootstrap-3.4.1-dist\css\bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -167,11 +167,11 @@
         <div class="div_logo">
             <img src="/images/favicon.ico" style="width:53px;height:53px;margin-top:30px;">
         </div>
-        <div class="div_word"style="margin-top:50px;">登录</div>
+        <div class="div_word"style="margin-top:50px;">管理员登录</div>
     </div>
 </div>
 
-<form action="{:url('http://www.hitword.com/index.php/index/Login/userLogin')}" accept-charset="UTF-8" method="post">
+<form action="{:url('http://www.hitword.com/index.php/index/Login/adminLogin')}" accept-charset="UTF-8" method="post">
     <div class="div_container_main">
         <div class="div_container_main_center">
             <div class="div_main_first">
@@ -201,72 +201,5 @@
         </div>
 </form>
 
-
-</div>
-<div class="div_foot">
-    <div class="div_foot_main">
-        <div class="div_sixth">
-            <div class="div_sixth_word1">
-                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#userRegister">用户注册</button>
-            </div>
-            <div class="div_sixth_word2">
-                <a href="{:url('http://www.hitword.com/index.php/index/Admin/loginView')}">
-                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#userRegister">管理员登录</button>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 注册 -->
-
-<div id="userRegister" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h1 class="text-center">注册</h1>
-            </div>
-            <div class="modal-body">
-                <form class="form-group" action="{:url('http://www.hitword.com/index.php/index/Login/userLogin')}" method="post">
-                    <div class="form-group">
-                        <label for="">用户名</label>
-                        <input class="form-control" type="hidden" name="tRegister" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="">姓名</label>
-                        <input class="form-control" type="text"  name="stu_name">
-                    </div>
-                    <div class="form-group">
-                        <label for="">性别</label>
-                        <input  type="radio"  name="stu_sex" value="男" checked>男
-                        <input  type="radio"  name="stu_sex" value="女">女
-                    </div>
-                    <div class="form-group">
-                        <label for="">密码</label>
-                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="stu_password">
-                    </div>
-                    <div class="form-group">
-                        <label for="">再次输入密码</label>
-                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="stu_password_again">
-                    </div>
-                    <div class="form-group">
-                        <label for="">电话</label>
-                        <input class="form-control" type="text"  name="stu_phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="">邮箱</label>
-                        <input class="form-control" type="email" placeholder="例如:***@***.com" name="stu_email">
-                    </div>
-                    <div class="text-right">
-                        <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
-                        <button class="btn btn-danger" data-dismiss="modal" style="background-color: #fb5e5999;border: 0px solid transparent;">取消</button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>

@@ -102,6 +102,10 @@ class UserController extends Controller
         if (empty($file)) {
             $this->error('请选择上传文件');
         }
+        $path = ROOT_PATH . 'public' . DS . 'uploads/' . $file_info_1['name'];
+        if(!file_exists($path)){
+            $this->error('文件已存在');
+        }
         // 移动到框架应用根目录/public/uploads/ 目录下
         $file_info = [
             'word_name' => $file_info_1['name'],
@@ -115,6 +119,7 @@ class UserController extends Controller
         if(!$res){
             $this->error("数据库错误");
         }else{
+
             $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
             if ($info) {
                 $this->success('文件上传成功');
@@ -124,5 +129,28 @@ class UserController extends Controller
                 $this->error($file->getError());
             }
         }
+    }
+
+    public function userWordDownload(){
+        $get = Request::instance()->get();
+        $name = $get['name'];
+        $path = ROOT_PATH . 'public' . DS . 'uploads/'. "$name";
+        if(!file_exists($path)){
+            $this->error('文件不存在');
+        }
+        // 打开文件
+        $file1 = fopen($path, "r");
+        // 输入文件标签
+        Header("Content-type: application/octet-stream");
+        Header("Accept-Ranges: bytes");
+        Header("Accept-Length:".filesize($path));
+        Header("Content-Disposition: attachment;filename=" . $path);
+        ob_clean();     // 重点！！！
+        flush();        // 重点！！！！可以清除文件中多余的路径名以及解决乱码的问题：
+        //输出文件内容
+        //读取文件内容并直接输出到浏览器
+        echo fread($file1, filesize($path));
+        fclose($file1);
+        exit();
     }
 }
