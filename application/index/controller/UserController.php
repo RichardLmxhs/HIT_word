@@ -13,6 +13,9 @@ class UserController extends Controller
 {
     public function index()
     {
+        $user = new UserModel();
+        $user_data = $user->userQuery(session('user_id'));
+        $this->assign('user_data',$user_data);
         $html = $this->fetch();
         return $html;
     }
@@ -67,6 +70,18 @@ class UserController extends Controller
         }
     }
 
+    public function userChangePasswordView()
+    {
+        return $this->fetch('changePassword');
+    }
+
+    public function userInfoEditView(){
+        $user = new UserModel();
+        $user_info = $user->userQuery(session('user_id'));
+        $this->assign('user_info',$user_info);
+        return $this->fetch('userInfoEdit');
+    }
+
     public function userWordView()
     {
         $user = new UserModel();
@@ -77,6 +92,9 @@ class UserController extends Controller
 
     public function userWordUploadView()
     {
+        $user = new UserModel();
+        $user_data = $user->userQuery(session('user_id'));
+        $this->assign('user_data',$user_data);
         return $this->fetch('upload');
     }
 
@@ -88,10 +106,7 @@ class UserController extends Controller
         return $this->fetch('user_info');
     }
 
-    public function userChangePasswordView()
-    {
-        return $this->fetch('changePassword');
-    }
+
 
     public function userWordUpload()
     {
@@ -102,8 +117,9 @@ class UserController extends Controller
         if (empty($file)) {
             $this->error('请选择上传文件');
         }
-        $path = ROOT_PATH . 'public' . DS . 'uploads/' . $file_info_1['name'];
-        if(!file_exists($path)){
+        $path = ROOT_PATH . 'public' . DS . 'uploads\\' . $file_info_1['name'];
+
+        if(file_exists($path)){
             $this->error('文件已存在');
         }
         // 移动到框架应用根目录/public/uploads/ 目录下

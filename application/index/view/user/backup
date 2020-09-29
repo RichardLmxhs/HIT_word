@@ -1,0 +1,23 @@
+<!--                <tr>-->
+<!--                    {volist name="time" id="value"}-->
+<!--                <tr>-->
+<!--                    {if $value.free == 2}-->
+<!--                    <th>{$value.seq}</th>-->
+<!--                    <th>{$value.date} {$value.time_seg}</th>-->
+<!--                    <th>{$value.place}</th>-->
+<!--                    <th>{$value.class}</th>-->
+<!--                    <th>{$value.t_name}</th>-->
+<!--                    {else /}{/if}-->
+<!--                </tr>-->
+<!--                {/volist}-->
+<!--                </tr>-->
+
+D:\phpstudy_pro\HIT_word\HIT_word\application\index\controller\UserController.php:118:string
+'D:\phpstudy_pro\HIT_word\HIT_word\public\uploads\新建文本文档.txt' (length=71)
+
+:(
+
+文件已存在
+
+页面自动 跳转 等待时间： 2
+

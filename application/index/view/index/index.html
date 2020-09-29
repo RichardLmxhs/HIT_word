@@ -181,7 +181,7 @@
             </div>
             <div class="div_main_second">
                 <div class="search"style="float:left;">
-                    <input id="usename" name="id"  type="text" style="width:270px;height:30px; border:1px #d1d5da solid;border-radius:3px; ">
+                    <input id="username" name="user_id"  type="text" style="width:270px;height:30px; border:1px #d1d5da solid;border-radius:3px; ">
                 </div>
             </div>
             <div class="div_main_third">
@@ -191,7 +191,7 @@
             </div>
             <div class="div_main_fouth">
                 <div class="search"style="float:left;">
-                    <input id="password" name="password"  type="password" style="width:270px;height:30px; border:1px #d1d5da solid;border-radius:3px; ">
+                    <input id="password" name="user_password"  type="password" style="width:270px;height:30px; border:1px #d1d5da solid;border-radius:3px; ">
                 </div>
             </div>
             <div class="div_main_fifth">
@@ -228,35 +228,39 @@
                 <h1 class="text-center">注册</h1>
             </div>
             <div class="modal-body">
-                <form class="form-group" action="{:url('http://www.hitword.com/index.php/index/Login/userLogin')}" method="post">
+                <form class="form-group" action="{:url('http://www.hitword.com/index.php/index/Register/userRegister')}" method="post">
                     <div class="form-group">
                         <label for="">用户名</label>
-                        <input class="form-control" type="hidden" name="tRegister" value="0">
+                        <input class="form-control" type="text" name="user_id" value="">
                     </div>
                     <div class="form-group">
                         <label for="">姓名</label>
-                        <input class="form-control" type="text"  name="stu_name">
+                        <input class="form-control" type="text"  name="user_name">
                     </div>
                     <div class="form-group">
                         <label for="">性别</label>
-                        <input  type="radio"  name="stu_sex" value="男" checked>男
-                        <input  type="radio"  name="stu_sex" value="女">女
+                        <input  type="radio"  name="user_sex" value="男" checked>男
+                        <input  type="radio"  name="user_sex" value="女">女
                     </div>
                     <div class="form-group">
                         <label for="">密码</label>
-                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="stu_password">
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="user_password">
                     </div>
                     <div class="form-group">
                         <label for="">再次输入密码</label>
-                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="stu_password_again">
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="user_password">
                     </div>
                     <div class="form-group">
                         <label for="">电话</label>
-                        <input class="form-control" type="text"  name="stu_phone">
+                        <input class="form-control" type="text"  name="user_phone">
                     </div>
                     <div class="form-group">
                         <label for="">邮箱</label>
-                        <input class="form-control" type="email" placeholder="例如:***@***.com" name="stu_email">
+                        <input class="form-control" type="email" placeholder="例如:***@***.com" name="user_email">
+                    </div>
+                    <div class="form-group">
+                        <label for="">年龄</label>
+                        <input class="form-control" type="number"  name="user_age">
                     </div>
                     <div class="text-right">
                         <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
