@@ -94,7 +94,7 @@ class AdminModel extends BaseModel
         $data = array(
             'dep_name' => $data_add['dep_name'],
             'dep_place' => $data_add['dep_place'],
-            'dep_leader' => $data_add['dep_place'],
+            'dep_leader' => $data_add['dep_leader'],
             'dep_level' => $data_add['dep_level'],
             'dep_pre' => $data_add['dep_pre']
         );
@@ -106,7 +106,7 @@ class AdminModel extends BaseModel
         $data = array(
             'dep_name' => $data_edit['dep_name'],
             'dep_place' => $data_edit['dep_place'],
-            'dep_leader' => $data_edit['dep_place'],
+            'dep_leader' => $data_edit['dep_leader'],
             'dep_level' => $data_edit['dep_level'],
             'dep_pre' => $data_edit['dep_pre']
         );
@@ -122,10 +122,16 @@ class AdminModel extends BaseModel
     public function depDelete($dep_name){
         $is_null = Db::table('user_department')->where('dep_name',$dep_name)->find();
         if($is_null == null){
+            $is_null1 = Db::table('hit_department')->where('dep_name',$dep_name)->find();
+            if($is_null1 == null){
+                $this->error['state'] = -1;
+                $this->error['msg'] = '要删除的部门不存在';
+                return $this->error;
+            }
             return Db::table('hit_department')->where('dep_name',$dep_name)->delete();
         }else{
             $this->error['state'] = -1;
-            $this->error['msg'] = '要删除的部门存在哟用户，无法删除';
+            $this->error['msg'] = '要删除的部门存在用户，无法删除';
             return $this->error;
         }
     }
@@ -170,6 +176,12 @@ class AdminModel extends BaseModel
     public function wordList(){
         return Db::table('hit_word')
             ->join('user_word','user_word.word_id = hit_word.word_id')
+            ->select();
+    }
+
+    public function depList(){
+        return Db::table('hit_department')
+            ->join('user_department','hit_department.user_id = user_department.user_id')
             ->select();
     }
 }

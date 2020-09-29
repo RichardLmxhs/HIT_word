@@ -40,10 +40,20 @@ class AdminController extends Controller
     public function adminRoleManageView(){
         $admin = new AdminModel();
         $data = $admin->roleQuery();
+        $user_list = $admin->userList();
+        $user_role = $admin->
+        $this->assign('user_list',$user_list);
         $this->assign('role_list',$data);
+
         return $this->fetch('adminRoleManage');
     }
 
+    public function depManageView(){
+        $admin = new AdminModel();
+        $dep_data = $admin->depList();
+        $this->assign('dep_list',$dep_data);
+        return $this->fetch('depManage');
+    }
     public function adminWordManage(){
         $admin = new AdminModel();
         $word_list = $admin->wordList();
@@ -202,6 +212,70 @@ class AdminController extends Controller
                 $this->error('数据库错误');
             }else{
                 $this->success('流程变动成功');
+            }
+        }
+    }
+
+    public function roleAssign(){
+        $post = Request::instance()->post();
+    }
+
+    public function depAdd(){
+        $post = Request::instance()->post();
+        $rule = [
+            'dep_name' => 'require',
+            'dep_place' => 'require',
+            'dep_leader' => 'require',
+            'dep_level' => 'require',
+            'dep_pre' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if($validate->check($post)){
+            $this->error($validate->getError());
+        }else{
+            $admin = new AdminModel();
+            $res = $admin->depAdd($post);
+            if(!$res){
+                $this->error('数据库错误');
+            }
+            $this->success('添加成功',url("admin/depManage"));
+        }
+    }
+
+    public function depDel(){
+        $get = Request::instance()->get();
+        if(!isset($get['dep_name'])){
+            $this->error('删除参数错误');
+        }
+        $dep_name = $get['dep_name'];
+        $admin = new AdminModel();
+        $res = $admin->depDelete($dep_name);
+        if(isset($res['state']) && $res['state'] == -1){
+            $this->error($res['msg']);
+        }else{
+            $this->success('删除成功',url('admin/depManage'));
+        }
+    }
+
+    public function depEdit(){
+        $post = Request::instance()->post();
+        $rule = [
+            'dep_name' => 'require',
+            'dep_place' => 'require',
+            'dep_leader' => 'require',
+            'dep_level' => 'require',
+            'dep_pre' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if($validate->check($post)){
+            $this->error($validate->getError());
+        }else{
+            $admin = new AdminModel();
+            $res = $admin->depEdit($post);
+            if(!$res){
+                $this->error('删除失败');
+            }else{
+                $this->success('删除成功',url('admin/depManage'));
             }
         }
     }
