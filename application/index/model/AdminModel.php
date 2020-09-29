@@ -7,9 +7,16 @@ use think\Db;
 use think\Model;
 class AdminModel extends BaseModel
 {
+    public function userList(){
+        return Db::table('hit_user')->select();
+    }
+
     //管理员查询
     public function adminQuery($admin_id){
         return Db::table("hit_admin")->where("admin_id",$admin_id)->find();
+    }
+    public function adminList(){
+        return Db::table("hit_admin")->select();
     }
 
     //管理员登录
@@ -47,7 +54,6 @@ class AdminModel extends BaseModel
         $add = array(
             'admin_id' => $data_add['admin_id'],
             'admin_password' => $this->encryptPassword($data_add['password']),
-            'admin_log' => ''
         );
         return Db::table('hit_amdin')->insert($add);
     }
@@ -159,6 +165,11 @@ class AdminModel extends BaseModel
     //sql操作
     private function SQLOperation($code){
         //code == 0数据库备份
+    }
 
+    public function wordList(){
+        return Db::table('hit_word')
+            ->join('user_word','user_word.word_id = hit_word.word_id')
+            ->select();
     }
 }

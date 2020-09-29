@@ -27,11 +27,12 @@ class BaseModel extends Model
         return Db::table("hit_user")->where("user_id", $user_id)->find();
     }
 
+
     /*
      * 用户添加
      * @param $data 添加的用户数据
      */
-    protected function userAdd($data)
+    public function userAdd($data)
     {
         if ($data == null) {
             $this->error['state'] = -1;
@@ -44,26 +45,15 @@ class BaseModel extends Model
             $this->error['msg'] = '用户id已存在';
             return $this->error;
         }
-        $data_add = array(
-            "user_id" => $data['user_id'],
-            "user_name" => $data["user_name"],
-            'user_password' => $data['user_password'],
-            'user_msg' => $data['user_mag'],
-            'user_msg_history' => $data['user_msg_history'],
-            'user_sex' => $data['user_sex'],
-            'user_email' => $data['user_email'],
-            'user_phone' => $data['user_phone'],
-            'user_age' => $data['user_age']
-        );
-        $data_add['user_password'] = $this->encryptPassword($data_add["user_password"]);
-        return Db::table('hit_user')->insert($data_add);
+        $data['user_password'] = $this->encryptPassword($data["user_password"]);
+        return Db::table('hit_user')->insert($data);
     }
 
     /*
      * 用户删除
      * @param $user_id
      */
-    protected function userDelete($user_id)
+    public function userDelete($user_id)
     {
         $is_exist = Db::table('hit_user')->where("user_id", $user_id)->find();
         if ($is_exist == null) {
@@ -109,25 +99,14 @@ class BaseModel extends Model
             $this->error['msg'] = '要修改的用户不存在';
             return $this->error;
         }
-        $data_edit = array(
-            "user_id" => $user_data['user_id'],
-            "user_name" => $user_data["user_name"],
-            'user_password' => $user_data['user_password'],
-            'user_msg' => $user_data['user_mag'],
-            'user_msg_history' => $user_data['user_msg_history'],
-            'user_sex' => $user_data['user_sex'],
-            'user_email' => $user_data['user_email'],
-            'user_phone' => $user_data['user_phone'],
-            'user_age' => $user_data['user_age']
-        );
-        $data_edit["user_password"] = $this->encryptPassword($data_edit['user_password']);
-        return Db::table('hit_user')->update($data_edit);
+        $user_data["user_password"] = $this->encryptPassword($user_data['user_password']);
+        return Db::table('hit_user')->update($user_data);
     }
 
     /*
      * 文档查询
      */
-    protected function wordQuery($word_id)
+    public function wordQuery($word_id)
     {
         return Db::table("hit_word")->where("word_id", $word_id)->find();
     }
@@ -151,23 +130,23 @@ class BaseModel extends Model
     /*
      * 文档修改
      */
-    protected function wordEdit($word_data)
+    public function wordEdit($word_data)
     {
-        $data_update = array(
-            'word_id' => $word_data['word_id'],
-            'word_name' => $word_data['word_name'],
-            'word_place' => $word_data['word_place'],
-            'word_state' => $word_data['word_state'],
-            'word_introduction' => $word_data['word_introduction'],
-            'word_startTime' => $word_data['word_startTime']
-        );
-        return Db::table('hit_word_process')->update($data_update);
+//        $data_update = array(
+//            'word_id' => $word_data['word_id'],
+//            'word_name' => $word_data['word_name'],
+//            'word_place' => $word_data['word_place'],
+//            'word_state' => $word_data['word_state'],
+//            'word_introduction' => $word_data['word_introduction'],
+//            'word_startTime' => $word_data['word_startTime']
+//        );
+        return Db::table('hit_word_process')->update($word_data);
     }
 
     /*
      * 文档删除
      */
-    protected function wordDelete($word_id)
+    public function wordDelete($word_id)
     {
         return Db::table('hit_word_process')->where("word_id", $word_id)->delete();
     }
