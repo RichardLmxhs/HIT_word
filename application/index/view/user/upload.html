@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>文件上传示例</title>
+    <title>文件上传</title>
     <link rel="stylesheet" type="text/css" href="\static\bootstrap-3.4.1-dist\css\bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -59,19 +59,24 @@
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-12 column">
-
             <FORM method="post" enctype="multipart/form-data" class="form" role="form" action="{:url('User/userWordUpload')}">
                 <div class="form-group">
-                    <label for="infile">文件输入</label>
-                    <INPUT type="file" class="files" name="file"><br/>
-
-                    <label for="radio">是否是流程文档</label><br/>
-                    <input type="radio" class="files" name="word_state" value="-1">是
-                    <input type="radio" class="files" name="word_state" value="0">否<br/>
+                    <label for="inputfile">文件输入</label>
+                    <INPUT type="file" name="file" id="inputfile"><br/>
                 </div>
                 <div class="form-group">
-                    <label for="radio">文档介绍</label><br/>
-                    <input type="text" class="files" name="word_introduction">
+                    <label for="name">是否是流程文档</label><br/>
+                    <label class="form-radio">
+                        <input type="radio" name="word_state" value="0">是
+                    </label>
+                    <label class="form-radio">
+                        <input type="radio" name="word_state" value="-1">否<br/>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="introduction">文档介绍</label><br/>
+                    <textarea class="form-control" rows="3" name="word_introduction"></textarea>
+<!--                    <input type="text" class="files" name="word_introduction" id="introduction">-->
                 </div>
                 <button type="submit" class="btn btn-default">提交</button>
             </form>

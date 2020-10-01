@@ -108,7 +108,10 @@ class BaseModel extends Model
      */
     public function wordQuery($word_id)
     {
-        return Db::table("hit_word")->where("word_id", $word_id)->find();
+        return Db::table("hit_word_process")->where("word_id", $word_id)->find();
+    }
+    public function wordQueryByName($word_name){
+        return Db::table("hit_word_process")->where("word_name", $word_name)->find();
     }
 
     /*
@@ -116,15 +119,15 @@ class BaseModel extends Model
      */
     public function wordUpload($word_data)
     {
-        $data_ins = array(
-            'word_id' => $word_data['word_id'],
-            'word_name' => $word_data['word_name'],
-            'word_place' => $word_data['word_place'],
-            'word_state' => $word_data['word_state'],
-            'word_introduction' => $word_data['word_introduction'],
-            'word_startTime' => $word_data['word_startTime']
-        );
-        return Db::table("hit_word_process")->insert($data_ins);
+        $res = Db::table("hit_word_process")->insert($word_data);
+        if($res != null){
+            return Db::table("hit_word_process")->where($word_data)->value('word_id');
+        }else{
+            return false;
+        }
+    }
+    public function wordUserJoin($user_word){
+        return Db::table('user_word')->insert($user_word);
     }
 
     /*
@@ -148,6 +151,8 @@ class BaseModel extends Model
      */
     public function wordDelete($word_id)
     {
-        return Db::table('hit_word_process')->where("word_id", $word_id)->delete();
+        $res1 = Db::table('hit_word_process')->where("word_id", $word_id)->delete();
+        $res2 = Db::table('user_word')->where("word_id", $word_id)->delete();
+        return $res1 & $res2;
     }
 }

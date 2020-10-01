@@ -86,7 +86,14 @@ class UserController extends Controller
     {
         $user = new UserModel();
         $word_list = $user->userWordQuery(session('user_id'));
+        for($i = 0;$i < count($word_list);$i++){
+            $offset = strpos($word_list[$i]['word_place'],'\\');
+            $word_list[$i]['word_place'] = substr($word_list[$i]['word_place'],0,$offset+1);
+            $word_list[$i]['word_place'] = '\\'.$word_list[$i]['word_place'];
+        }
+        $user_info = $user->userQuery(session('user_id'));
         $this->assign('word_list', $word_list);
+        $this->assign('user_data',$user_info);
         return $this->fetch('user_word');
     }
 
@@ -118,55 +125,59 @@ class UserController extends Controller
             $this->error('请选择上传文件');
         }
         $path = ROOT_PATH . 'public' . DS . 'uploads\\' . $file_info_1['name'];
-
-        if(file_exists($path)){
+        $user = new UserModel();
+        $is_exists = $user->wordQueryByName($file_info_1['name']);
+        if($is_exists){
             $this->error('文件已存在');
         }
+
         // 移动到框架应用根目录/public/uploads/ 目录下
+        $info = $file['file']->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if ($info) {
+//                $this->success('文件上传成功');
+//            var_dump($info->getSaveName());
+            $word_place = $info->getSaveName();
+        } else {
+            // 上传失败获取错误信息
+            $this->error($file->getError());
+        }
+
         $file_info = [
             'word_name' => $file_info_1['name'],
-            'word_place' => ROOT_PATH . 'public' . DS . 'uploads',
-            'word_state' => $post['file_state'],
-            'word_introduction' => $post['file_introduction'],
-            'word_startTime' => date("Y-M-D h:i")
+            'word_place' => $word_place,
+            'word_state' => $post['word_state'],
+            'word_introduction' => $post['word_introduction'],
+            'word_startTime' => date("Y-m-d-h:i")
         ];
-        $user = new UserModel();
         $res = $user->wordUpload($file_info);
         if(!$res){
             $this->error("数据库错误");
         }else{
-
-            $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
-            if ($info) {
-                $this->success('文件上传成功');
-                echo $info->getFilename();
-            } else {
-                // 上传失败获取错误信息
-                $this->error($file->getError());
+            $user_word = [
+                'word_id' => $res,
+                'user_id' => session('user_id'),
+                'word_name' => $file_info_1['name']
+            ];
+            $res1 = $user->wordUserJoin($user_word);
+            if(!$res){
+                $this->error("数据库错误1");
             }
+            $this->success('文件上传成功');
         }
     }
 
     public function userWordDownload(){
-        $get = Request::instance()->get();
+        $get = Request::instance()->param();
         $name = $get['name'];
-        $path = ROOT_PATH . 'public' . DS . 'uploads/'. "$name";
+        $user = new UserModel();
+        $word = $user->wordQueryByName($name);
+        $path = ROOT_PATH . 'public' . DS . 'uploads\\' .$word['word_place'];
         if(!file_exists($path)){
             $this->error('文件不存在');
         }
-        // 打开文件
-        $file1 = fopen($path, "r");
-        // 输入文件标签
-        Header("Content-type: application/octet-stream");
-        Header("Accept-Ranges: bytes");
-        Header("Accept-Length:".filesize($path));
-        Header("Content-Disposition: attachment;filename=" . $path);
-        ob_clean();     // 重点！！！
-        flush();        // 重点！！！！可以清除文件中多余的路径名以及解决乱码的问题：
-        //输出文件内容
-        //读取文件内容并直接输出到浏览器
-        echo fread($file1, filesize($path));
-        fclose($file1);
-        exit();
+        header("Content-type: application/octet-stream");
+        header('Content-Disposition: attachment; filename="'. $name .'"');
+        header("Content-Length: ". filesize($path));
+        readfile($path);
     }
 }
