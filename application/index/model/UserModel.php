@@ -57,11 +57,15 @@ class UserModel extends BaseModel
     //用户修改密码
     function editPassword($user_id, $old_password, $new_password)
     {
-        $existed_password = Db::table("hit_user")->where("user_id", $user_id)->value("password");
+        $old_password = $this->encryptPassword($old_password);
+        $new_password = $this->encryptPassword($new_password);
+        $existed_password = Db::table("hit_user")->where("user_id", $user_id)->value("user_password");
         if ($existed_password != null && $existed_password == $old_password) {
-            $data_change = array('password' => $new_password);
+            $data_change = array('user_password' => $new_password);
             return Db::table('hit_user')->where('user_id', $user_id)->update($data_change);
         } else {
+            var_dump($existed_password);
+            var_dump($old_password);
             $this->error['state'] = -1;
             $this->error['msg'] = '原密码错误或用户不存在';
             return $this->error;

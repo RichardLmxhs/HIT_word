@@ -34,11 +34,11 @@ class UserController extends Controller
         if (!$result) {
             $this->error($validate->getError());
         } else {
-            $res = $user->editPassword($post['user_id'], $post['user_password'], $post['user_password_old']);
+            $res = $user->editPassword($post['user_id'], $post['user_password_old'], $post['user_password']);
             if (isset($res['state']) && $res['state'] == -1) {
                 $this->error($res['msg']);
             } else {
-                $this->success('操作成功', url('User\index'));
+                $this->success('操作成功', url('index\User\userChangePasswordView'));
             }
         }
     }
@@ -48,7 +48,6 @@ class UserController extends Controller
         $post = Request::instance()->post();
         $rule = [
             'user_id' => 'require',
-            'user_password' => 'require',
             'user_name' => 'require',
             'user_sex' => 'require',
             'user_age' => 'between:1,120',
@@ -61,25 +60,29 @@ class UserController extends Controller
         if (!$result) {
             $this->error($validate->getError());
         } else {
+            var_dump($post);
             $res = $user->userEdit($post);
             if (isset($res['state']) && $res['state'] == -1) {
                 $this->error($res['msg']);
             } else {
-                $this->success('修改成功', url('User/index'));
+                $this->success('修改成功', url('User/userInfoEditView'));
             }
         }
     }
 
     public function userChangePasswordView()
     {
+        $user = new UserModel();
+        $user_info = $user->userQuery(session('user_id'));
+        $this->assign('user_data',$user_info);
         return $this->fetch('changePassword');
     }
 
     public function userInfoEditView(){
         $user = new UserModel();
         $user_info = $user->userQuery(session('user_id'));
-        $this->assign('user_info',$user_info);
-        return $this->fetch('userInfoEdit');
+        $this->assign('user_data',$user_info);
+        return $this->fetch('user_Info');
     }
 
     public function userWordView()
@@ -94,6 +97,7 @@ class UserController extends Controller
         $user_info = $user->userQuery(session('user_id'));
         $this->assign('word_list', $word_list);
         $this->assign('user_data',$user_info);
+//        $this->display("head");
         return $this->fetch('user_word');
     }
 
@@ -179,5 +183,45 @@ class UserController extends Controller
         header('Content-Disposition: attachment; filename="'. $name .'"');
         header("Content-Length: ". filesize($path));
         readfile($path);
+    }
+
+    public function uesrWordEdit(){
+        $file = Request::instance()->file();
+        $post = Request::instance()->post();
+        $file_info_1 = $file['file']->getInfo();
+
+        if (empty($file)) {
+            $this->error('请选择上传文件');
+        }
+        $user = new UserModel();
+        $is_exists = $user->wordQueryByName($file_info_1['name']);
+        if(!$is_exists){
+            $this->error('文件不存在');
+        }
+        $info1 = unlink(ROOT_PATH . 'public' . DS . 'uploads\\'.$is_exists['word_place']);
+        if(!$info1){
+            $this->error('删除失败');
+        }
+        $info = $file['file']->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if ($info) {
+//            var_dump($info->getSaveName());
+            $word_place = $info->getSaveName();
+        } else {
+            // 上传失败获取错误信息
+            $this->error($file->getError());
+        }
+        $file_info = [
+            'word_name' => $file_info_1['name'],
+            'word_place' => $word_place,
+            'word_state' => $post['word_state'],
+            'word_introduction' => $post['word_introduction'],
+            'word_startTime' => date("Y-m-d-h:i")
+        ];
+        $res = $user->wordUpload($file_info);
+        if(!$res){
+            $this->error("数据库错误");
+        }else{
+            $this->success("修改成功");
+        }
     }
 }

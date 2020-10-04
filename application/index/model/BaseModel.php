@@ -1,7 +1,6 @@
 <?php
 
 namespace app\index\model;
-
 use think\Db;
 use think\Model;
 
@@ -93,13 +92,12 @@ class BaseModel extends Model
      */
     public function userEdit($user_data)
     {
-        $is_exist = Db::table('user_id')->where('user_id', $user_data["user_id"])->find();
+        $is_exist = Db::table('hit_user')->where('user_id', $user_data["user_id"])->find();
         if ($is_exist == null) {
             $this->error["state"] = -1;
             $this->error['msg'] = '要修改的用户不存在';
             return $this->error;
         }
-        $user_data["user_password"] = $this->encryptPassword($user_data['user_password']);
         return Db::table('hit_user')->update($user_data);
     }
 
@@ -128,6 +126,14 @@ class BaseModel extends Model
     }
     public function wordUserJoin($user_word){
         return Db::table('user_word')->insert($user_word);
+    }
+    public function wordEditUpload($word_data){
+        $res = Db::table("hit_word_process")->update($word_data);
+        if($res != null){
+            return Db::table("hit_word_process")->where($word_data)->value('word_id');
+        }else{
+            return false;
+        }
     }
 
     /*

@@ -1,0 +1,77 @@
+{include file="include/head" /}
+<div class="container">
+    <div class="row clearfix">
+
+        <div class="col-md-12">
+            <h3 class="text-left">
+                <span class="glyphicon glyphicon-user"></span>
+                个人信息修改
+            </h3>
+            <br>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-4"></div>
+        <div class="col-md-4 column">
+
+            <h1 style="margin:0px" align="center">
+                <span class="nowrap"><b></b></span>
+            </h1>
+
+
+            <form action="{:url('http://www.hitword.com/index.php/index/user/userInfoEdit')}" accept-charset="UTF-8" method="post" >
+                <div>
+                    <dl class="form-group">
+                        <dt><label for="user_id">用户名</label></dt>
+                        <dd>
+
+                            <input class="form-control" type="text" name="user_id" id="user_id" readonly="readonly" value="{$user_data.user_id}">
+                            <div class="note">
+                                用户名不可修改！
+                            </div>
+                        </dd>
+                    </dl>
+
+
+                    <dl class="form-group">
+                        <dt><label for="user_profile_name1">姓名</label></dt>
+                        <dd><input class="form-control" type="text" name="user_name" id="user_profile_name1" value="{$user_data.user_name}">
+                        </dd>
+                    </dl>
+
+                    <dl class="form-group">
+                        <dt><label for="user_profile_name2">性别</label></dt>
+                        <dd><input class="form-group" type="radio" name="user_sex"
+                                   value="男" {if $user_data.user_sex == '男'} checked {else /} {/if}>男
+                            <input class="form-group" type="radio" name="user_sex"
+                                   value="女" {if $user_data.user_sex == '女'} checked {else /} {/if}>女
+                        </dd>
+                    </dl>
+
+                    <dl class="form-group">
+                        <dt><label>年龄</label></dt>
+                        <dd><input class="form-control" type="number" name="user_age" value="{$user_data.user_age}">
+                        </dd>
+                    </dl>
+
+                    <dl class="form-group">
+                        <dt><label>手机</label></dt>
+                        <dd><input class="form-control" type="number" name="user_phone" value="{$user_data.user_phone}">
+                        </dd>
+                    </dl>
+
+                    <dl class="form-group">
+                        <dt><label>邮箱</label></dt>
+                        <dd><input class="form-control" type="email" name="user_email" value="{$user_data.user_email}">
+                        </dd>
+                    </dl>
+                    <p><button type="submit" class="btn btn-primary">保存</button></p>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
