@@ -22,7 +22,7 @@ class AdminModel extends BaseModel
     //管理员登录
     public function adminLogin($admin_id, $admin_password){
         $admin_password = $this->encryptPassword($admin_password);
-        $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("password");
+        $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("admin_password");
         return $admin_password == $is_password ? true : false;
     }
 
