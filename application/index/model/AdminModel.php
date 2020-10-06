@@ -30,7 +30,7 @@ class AdminModel extends BaseModel
     public function adminPasswordEdit($admin_id, $old_password, $new_password){
         $old_password = $this->encryptPassword($old_password);
         $new_password = $this->encryptPassword($new_password);
-        $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("password");
+        $is_password = Db::table("hit_admin")->where("admin_id",$admin_id)->value("admin_password");
         $data_edit = array(
             'admin_password' => $new_password
         );
@@ -53,9 +53,9 @@ class AdminModel extends BaseModel
         }
         $add = array(
             'admin_id' => $data_add['admin_id'],
-            'admin_password' => $this->encryptPassword($data_add['password']),
+            'admin_password' => $this->encryptPassword($data_add['admin_password']),
         );
-        return Db::table('hit_amdin')->insert($add);
+        return Db::table('hit_admin')->insert($add);
     }
 
     //管理员删除用户
@@ -174,8 +174,8 @@ class AdminModel extends BaseModel
     }
 
     public function wordList(){
-        return Db::table('hit_word')
-            ->join('user_word','user_word.word_id = hit_word.word_id')
+        return Db::table('hit_word_process')
+            ->join('user_word','user_word.word_id = hit_word_process.word_id')
             ->select();
     }
 

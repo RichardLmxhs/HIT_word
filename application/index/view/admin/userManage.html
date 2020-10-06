@@ -1,10 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{include file="include/admin_head" /}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+
+            <table class="table table-striped">
+                <caption>用户管理</caption>
+                <thead>
+
+                <tr>
+                    <th>id</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>年龄</th>
+                    <th>邮箱</th>
+                    <th>电话</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                {volist name="user_list" id="value"}
+                <tbody>
+                <tr>
+                    <th>{$value.user_id}</th>
+                    <th>{$value.user_name}</th>
+                    <th>{$value.user_sex}</th>
+                    <th>{$value.user_age}</th>
+                    <th>{$value.user_email}</th>
+                    <th>{$value.user_phone}</th>
+                    <th>
+                        <a href="{:url('Admin/userDelete','user_id='.$value.user_id)}">
+                            <button type="button" class="btn btn-default btn-primary" role="button">
+                                删除
+                            </button>
+                        </a>
+                    </th>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#adduser">
+                添加用户
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="adduser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">添加用户</h1>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" action="{:url('admin/userAdd')}" method="post">
+                    <div class="form-group">
+                        <label for="">用户名</label>
+                        <input class="form-control" type="text" name="user_id" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">姓名</label>
+                        <input class="form-control" type="text"  name="user_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="">性别</label>
+                        <input  type="radio"  name="user_sex" value="男" checked>男
+                        <input  type="radio"  name="user_sex" value="女">女
+                    </div>
+                    <div class="form-group">
+                        <label for="">密码</label>
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="user_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="">再次输入密码</label>
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="user_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="">电话</label>
+                        <input class="form-control" type="text"  name="user_phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="">邮箱</label>
+                        <input class="form-control" type="email" placeholder="例如:***@***.com" name="user_email">
+                    </div>
+                    <div class="form-group">
+                        <label for="">年龄</label>
+                        <input class="form-control" type="number"  name="user_age">
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
+                        <button class="btn btn-danger" data-dismiss="modal" style="background-color: #fb5e5999;border: 0px solid transparent;">取消</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

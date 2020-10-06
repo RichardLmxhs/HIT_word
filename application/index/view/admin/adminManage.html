@@ -1,10 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{include file="include/admin_head" /}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
 
+            <table class="table table-striped">
+                <caption>用户管理</caption>
+                <thead>
+
+                <tr>
+                    <th>管理员id</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                {volist name="admin_list" id="value"}
+                <tbody>
+                <tr>
+                    <th>{$value.admin_id}</th>
+                    <th>
+                        <a href="{:url('admin/adminDelete','admin_id='.$value.admin_id)}">
+                            <button type="button" class="btn btn-default btn-primary" role="button">
+                                删除
+                            </button>
+                        </a>
+                    </th>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#addAdmin">
+                添加管理员
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="addAdmin" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">添加管理员</h1>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" action="{:url('admin/adminAdd')}" method="post">
+                    <div class="form-group">
+                        <label for="">管理员id</label>
+                        <input class="form-control" type="text" name="admin_id" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">密码</label>
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="admin_password">
+                    </div>
+                    <div class="form-group">
+                        <label for="">确认密码</label>
+                        <input class="form-control" type="password" placeholder="至少6位字母或数字" name="admin_password_again">
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
+                        <button class="btn btn-danger" data-dismiss="modal" style="background-color: #fb5e5999;border: 0px solid transparent;">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -62,6 +62,7 @@ class LoginController extends Controller
                 session('admin_id', $post['admin_id']);
                 $this->success("登录成功", url("Admin/index"));
             }
+            $this->error('登录失败');
         }
     }
 }

@@ -1,10 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{include file="include/admin_head" /}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <table class="table table-striped">
+                <caption>文档管理</caption>
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>位置</th>
+                    <th>状态</th>
+                    <th>介绍</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                {volist name="word_list" id="value"}
+                <tbody>
+                <tr>
+                    <th>{$value.word_name}</th>
+                    <th>{$value.word_place}</th>
+                    <th>{if $value.word_state == -1}无流程文档{else /}{/if}
+                        {if $value.word_state == 0}起草{else /}{/if}
+                        {if $value.word_state == 1}修改{else /}{/if}
+                        {if $value.word_state == 2}提交{else /}{/if}
+                        {if $value.word_state == 3}审核{else /}{/if}
+                        {if $value.word_state == 4}归档{else /}{/if}</th>
+                    <th>{$value.word_introduction}</th>
+                    <th>{$value.word_startTime}</th>
+                    <th>
+                        <a href="">
+                            <button type="button" class="btn btn-default btn-primary" role="button">
+                                下载并编辑
+                            </button>
+                        </a>
+                        <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#commit">
+                            提交修改
+                        </button>
+                    </th>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
+<div id="commit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">文档提交修改</h1>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" enctype="multipart/form-data" action="" method="post">
+                    <div class="form-group">
+                        <label for="">文件输入</label>
+                        <INPUT class="form-control" type="file" name="file" id="inputfile">
+                    </div>
+                    <div class="form-group">
+                        <label for="">文档状态不可更改</label><br/>
+                        <input type="hidden" name="word_state" value="{$value.word_state}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">文档介绍</label><br/>
+                        <textarea class="form-control" rows="3" name="word_introduction">{$value.word_introduction}</textarea>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
+                        <button class="btn btn-danger" data-dismiss="modal" style="background-color: #fb5e5999;border: 0px solid transparent;">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

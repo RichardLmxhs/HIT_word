@@ -34,6 +34,9 @@ class AdminController extends Controller
     }
 
     public function adminChangePasswordView(){
+        $admin = new AdminModel();
+        $admin_data = $admin->adminQuery(session('admin_id'));
+        $this->assign('admin_data',$admin_data);
         return $this->fetch('adminChangePassword');
     }
 
@@ -60,6 +63,10 @@ class AdminController extends Controller
         $this->assign('word_list',$word_list);
         return $this->fetch('adminWordManage');
     }
+
+    public function messageManageView(){
+        return $this->fetch('messageManage');
+    }
     public function userAdd(){
         $post = Request::instance()->post();
         $rule = [
@@ -79,7 +86,7 @@ class AdminController extends Controller
             $admin = new AdminModel();
             $res = $admin->userAdd($post);
             if($res != null) {
-                $this->success('添加成功', url('Admin\userManage'));
+                $this->success('添加成功', url('index\Admin\userManageView'));
             } else{
                 $this->error('添加失败');
             }
@@ -87,15 +94,18 @@ class AdminController extends Controller
     }
 
     public function userDelete(){
-        $get = Request::instance()->get();
+        $get = Request::instance()->param();
+//        var_dump($get);
         if(isset($get['user_id']) && $get['user_id'] != null){
             $admin = new AdminModel();
             $res = $admin->userDelete($get['user_id']);
             if(isset($res['state']) && $res['state'] == -1){
                 $this->error($res['msg']);
             } else{
-                $this->success('删除成功', url('Admin\userManage'));
+                $this->success('删除成功', url('index\Admin\userManageView'));
             }
+        }else{
+            $this->error('error');
         }
     }
 
@@ -128,6 +138,21 @@ class AdminController extends Controller
         }
     }
 
+    public function adminDelete(){
+        $get = Request::instance()->param();
+        if(isset($get['admin_id']) && $get['admin_id'] != null){
+            $admin = new AdminModel();
+            $res = $admin->adminDelete($get['admin_id']);
+            if(isset($res['state']) && $res['state'] == -1){
+                $this->error($res['msg']);
+            } else{
+                $this->success('删除成功', url('Admin\adminManageView'));
+            }
+        }else{
+            $this->error('error');
+        }
+    }
+
     public function adminChangePassword(){
         $admin_id = session('admin_id');
         $post = Request::instance()->post();
@@ -145,7 +170,7 @@ class AdminController extends Controller
         if(isset($res['state']) && $res['state'] == -1){
             $this->error($res['msg']);
         }
-        $this->success('修改成功',url('admin/adminChangePassword'));
+        $this->success('修改成功',url('admin/adminChangePasswordView'));
     }
 
     public function adminWordDownload(){

@@ -60,7 +60,7 @@ class BaseModel extends Model
             $this->error['msg'] = '用户不存在';
             return $this->error;
         } else {
-            $res_role = Db::table('hit_role')->where('user_id',$user_id)->find();
+            $res_role = Db::table('hit_role')->where('role_user_id',$user_id)->find();
             if($res_role != null){
                 $this->error['state'] = -1;
                 $this->error['msg'] = '有属于该用户的角色，无法进行删除';
@@ -73,7 +73,7 @@ class BaseModel extends Model
                 return $this->error;
             } else {
                 $res_user = Db::table('hit_user')->where("user_id", $user_id)->delete();
-                $res_dep = Db::table('user_deparment')->where('user_id', $user_id)->delete();
+                $res_dep = Db::table('user_department')->where('user_id', $user_id)->delete();
                 $res_word_del = Db::table('user_word')->where("user_id", $user_id)->delete();
                 if ($res_user != null && $res_dep != null && $res_word_del != null) {
                     return true;
