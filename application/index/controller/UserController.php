@@ -254,4 +254,11 @@ class UserController extends Controller
         session('user_id','');
         $this->success('注销成功',url("index/index/index"));
     }
+
+    public function userMessageView(){
+        $user = new UserModel();
+        $msg = $user->userQuery(session('user_id'));
+        $this->assign('user_data',$msg);
+        return $this->fetch('userMessage');
+    }
 }

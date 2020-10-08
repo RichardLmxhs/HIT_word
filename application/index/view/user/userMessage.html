@@ -1,0 +1,13 @@
+{include file="include/head" /}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h1>未读消息</h1>
+            {if $user_data.user_msg == null}空{else /}{$user_data.user_msg}{/if}
+            <h1>历史消息</h1>
+            {if $user_data.user_msg_history == null}空{else /}{$user_data.user_msg_history}{/if}
+        </div>
+    </div>
+</div>
+</body>
+</html>
