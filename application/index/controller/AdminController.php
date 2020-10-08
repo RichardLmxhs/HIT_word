@@ -42,11 +42,10 @@ class AdminController extends Controller
 
     public function adminRoleManageView(){
         $admin = new AdminModel();
-        $data = $admin->roleQuery();
+        $role_list = $admin->roleQuery();
         $user_list = $admin->userList();
-        $user_role = $admin->
         $this->assign('user_list',$user_list);
-        $this->assign('role_list',$data);
+        $this->assign('role_list',$role_list);
 
         return $this->fetch('adminRoleManage');
     }
@@ -57,14 +56,27 @@ class AdminController extends Controller
         $this->assign('dep_list',$dep_data);
         return $this->fetch('depManage');
     }
-    public function adminWordManage(){
+    public function adminWordManageView(){
         $admin = new AdminModel();
         $word_list = $admin->wordList();
+        if($word_list == null){
+            $word_list = [
+                'word_name' => '空',
+                'word_id' => '空',
+                'word_place' => '空',
+                'word_state' => '空',
+                'word_introduction' => '空',
+                'word_startTime' => '空'
+            ];
+        }
         $this->assign('word_list',$word_list);
         return $this->fetch('adminWordManage');
     }
 
     public function messageManageView(){
+        $admin = new AdminModel();
+        $user_list = $admin->userList();
+        $this->assign('user_list',$user_list);
         return $this->fetch('messageManage');
     }
     public function userAdd(){
@@ -174,26 +186,18 @@ class AdminController extends Controller
     }
 
     public function adminWordDownload(){
-        $get = Request::instance()->get();
+        $get = Request::instance()->param();
         $name = $get['name'];
-        $path = ROOT_PATH . 'public' . DS . 'uploads/'. "$name";
+        $user = new AdminModel();
+        $word = $user->wordQueryByName($name);
+        $path = ROOT_PATH . 'public' . DS . 'uploads\\' .$word['word_place'];
         if(!file_exists($path)){
             $this->error('文件不存在');
         }
-        // 打开文件
-        $file1 = fopen($path, "r");
-        // 输入文件标签
-        Header("Content-type: application/octet-stream");
-        Header("Accept-Ranges: bytes");
-        Header("Accept-Length:".filesize($path));
-        Header("Content-Disposition: attachment;filename=" . $path);
-        ob_clean();     // 重点！！！
-        flush();        // 重点！！！！可以清除文件中多余的路径名以及解决乱码的问题：
-        //输出文件内容
-        //读取文件内容并直接输出到浏览器
-        echo fread($file1, filesize($path));
-        fclose($file1);
-        exit();
+        header("Content-type: application/octet-stream");
+        header('Content-Disposition: attachment; filename="'. $name .'"');
+        header("Content-Length: ". filesize($path));
+        readfile($path);
     }
 
     public function adminWordDelete(){
@@ -215,6 +219,105 @@ class AdminController extends Controller
                 $this->error('删除失败');
             }
             $this->success('删除成功',url('admin/adminWordManage'));
+        }
+    }
+
+    public function adminWordEdit(){
+        $file = Request::instance()->file();
+        $file_info_1 = $file['file']->getInfo();
+        $post = Request::instance()->post();
+        if (empty($file)) {
+            $this->error('请选择上传文件');
+        }
+        $path = ROOT_PATH . 'public' . DS . 'uploads\\' . $file_info_1['name'];
+        $admin = new AdminModel();
+        $is_exists = $admin->wordQueryByName($file_info_1['name']);
+        if($is_exists){
+            $this->error('文件已存在');
+        }
+
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        $info = $file['file']->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if ($info) {
+//                $this->success('文件上传成功');
+//            var_dump($info->getSaveName());
+            $word_place = $info->getSaveName();
+        } else {
+            // 上传失败获取错误信息
+            $this->error($file->getError());
+        }
+
+        $file_info = [
+            'word_name' => $file_info_1['name'],
+            'word_place' => $word_place,
+            'word_state' => $post['word_state'],
+            'word_introduction' => $post['word_introduction'],
+            'word_startTime' => date("Y-m-d-h:i")
+        ];
+        $res = $admin->wordUpload($file_info);
+        if(!$res){
+            $this->error("数据库错误");
+        }else{
+            $user_word = [
+                'word_id' => $res,
+                'user_id' => 0,
+                'word_name' => $file_info_1['name']
+            ];
+            $res1 = $admin->wordUserJoin($user_word);
+            if(!$res){
+                $this->error("数据库错误1");
+            }
+            $this->success('文件上传成功');
+        }
+    }
+
+    public function adminWordUpload(){
+        // 获取表单上传文件
+        $file = Request::instance()->file();
+        $file_info_1 = $file['file']->getInfo();
+        $post = Request::instance()->post();
+        if (empty($file)) {
+            $this->error('请选择上传文件');
+        }
+        $path = ROOT_PATH . 'public' . DS . 'uploads\\' . $file_info_1['name'];
+        $admin = new AdminModel();
+        $is_exists = $admin->wordQueryByName($file_info_1['name']);
+        if($is_exists){
+            $this->error('文件已存在');
+        }
+
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        $info = $file['file']->move(ROOT_PATH . 'public' . DS . 'uploads');
+        if ($info) {
+//                $this->success('文件上传成功');
+//            var_dump($info->getSaveName());
+            $word_place = $info->getSaveName();
+        } else {
+            // 上传失败获取错误信息
+            $this->error($file->getError());
+        }
+
+        $file_info = [
+            'word_name' => $file_info_1['name'],
+            'word_place' => $word_place,
+            'word_state' => $post['word_state'],
+            'word_introduction' => $post['word_introduction'],
+            'word_startTime' => date("Y-m-d-h:i")
+        ];
+        $res = $admin->wordUpload($file_info);
+        if(!$res){
+            $this->error("数据库错误");
+        }else{
+            $user_word = [
+                'word_id' => $res,
+                'user_id' => 0,
+                'word_name' => $file_info_1['name']
+            ];
+            $res1 = $admin->wordUserJoin($user_word);
+            if(!$res){
+                $this->error("数据库错误1");
+            }
+            $this->success('文件上传成功');
         }
     }
 
@@ -243,19 +346,36 @@ class AdminController extends Controller
 
     public function roleAssign(){
         $post = Request::instance()->post();
+//        $rule = [
+//            'role_name' => "require",
+//            'user_id' => 'require'
+//        ];
+//        $validate = new Validate($rule);
+//        if(!$validate->check($post)){
+//            $this->error($validate->getError());
+//        }else{
+//            $admin = new AdminModel();
+//            $res = $admin->roleAdd($post);
+//            if(!$res){
+//                $this->error('失败');
+//            }else{
+//                $this->success('成功',url('index/admin/adminRoleManageView'));
+//            }
+//        }
+
+//        var_dump($post);
     }
 
     public function depAdd(){
         $post = Request::instance()->post();
         $rule = [
+            'dep_id' => 'require',
             'dep_name' => 'require',
             'dep_place' => 'require',
             'dep_leader' => 'require',
-            'dep_level' => 'require',
-            'dep_pre' => 'require'
         ];
         $validate = new Validate($rule);
-        if($validate->check($post)){
+        if(!$validate->check($post)){
             $this->error($validate->getError());
         }else{
             $admin = new AdminModel();
@@ -263,47 +383,69 @@ class AdminController extends Controller
             if(!$res){
                 $this->error('数据库错误');
             }
-            $this->success('添加成功',url("admin/depManage"));
+            $this->success('添加成功',url("admin/depManageView"));
         }
     }
 
     public function depDel(){
-        $get = Request::instance()->get();
-        if(!isset($get['dep_name'])){
+        $get = Request::instance()->param();
+        if(!isset($get['dep_id'])){
             $this->error('删除参数错误');
         }
-        $dep_name = $get['dep_name'];
+        $dep_id = $get['dep_id'];
         $admin = new AdminModel();
-        $res = $admin->depDelete($dep_name);
+        $res = $admin->depDelete($dep_id);
         if(isset($res['state']) && $res['state'] == -1){
             $this->error($res['msg']);
         }else{
-            $this->success('删除成功',url('admin/depManage'));
+            $this->success('删除成功',url('admin/depManageView'));
         }
     }
 
     public function depEdit(){
         $post = Request::instance()->post();
         $rule = [
+            'dep_id' => 'require',
             'dep_name' => 'require',
             'dep_place' => 'require',
             'dep_leader' => 'require',
-            'dep_level' => 'require',
-            'dep_pre' => 'require'
         ];
         $validate = new Validate($rule);
-        if($validate->check($post)){
+        if(!$validate->check($post)){
             $this->error($validate->getError());
         }else{
             $admin = new AdminModel();
             $res = $admin->depEdit($post);
             if(!$res){
-                $this->error('删除失败');
+                $this->error('修改失败');
             }else{
-                $this->success('删除成功',url('admin/depManage'));
+                $this->success('修改成功',url('admin/depManageView'));
             }
         }
     }
 
+    public function messageAdd(){
+        $post = Request::instance()->post();
+        $rule = [
+            'user_id' => 'require',
+            'message' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if(!$validate->check($post)){
+            $this->error($validate->getError());
+        }
+        $post['message'] = '消息发送时间:'.date('Y-m-d-h:i') .'  '.'消息内容:'. $post['message'];
+        $admin = new AdminModel();
+        $res = $admin->messageAdd($post);
+        if(!$res){
+            $this->error('推送失败');
+        }else{
+            $this->success('推送成功',url('admin/messageManageView'));
+        }
+    }
 
+    public function exitLogin(){
+        session('admin_id','');
+        $this->success('注销成功',url("index/index/index"));
+    }
 }

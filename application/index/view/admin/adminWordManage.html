@@ -28,7 +28,7 @@
                     <th>{$value.word_introduction}</th>
                     <th>{$value.word_startTime}</th>
                     <th>
-                        <a href="">
+                        <a href="{:url('index/Admin/adminWordDownload','name='.$value.word_name)}">
                             <button type="button" class="btn btn-default btn-primary" role="button">
                                 下载并编辑
                             </button>
@@ -36,11 +36,20 @@
                         <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#commit">
                             提交修改
                         </button>
+
+                        <button type="button" class="btn btn-default btn-primary" role="button"
+                                data-toggle="modal" data-target="#audit" {if $value.word_state < 0} disabled {else /}{/if}>
+                            审批
+                        </button>
+
                     </th>
                 </tr>
                 {/volist}
                 </tbody>
             </table>
+            <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#addWord">
+                新建文档
+            </button>
         </div>
     </div>
 </div>
@@ -53,13 +62,13 @@
                 <h1 class="text-center">文档提交修改</h1>
             </div>
             <div class="modal-body">
-                <form class="form-group" enctype="multipart/form-data" action="" method="post">
+                <form class="form-group" enctype="multipart/form-data" action="{:url('index/admin/adminWordEdit')}" method="post">
                     <div class="form-group">
                         <label for="">文件输入</label>
                         <INPUT class="form-control" type="file" name="file" id="inputfile">
                     </div>
                     <div class="form-group">
-                        <label for="">文档状态不可更改</label><br/>
+                        <label for="">无流程文档状态不可更改</label><br/>
                         <input type="hidden" name="word_state" value="{$value.word_state}">
                     </div>
                     <div class="form-group">
@@ -70,6 +79,79 @@
                         <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
                         <button class="btn btn-danger" data-dismiss="modal" style="background-color: #fb5e5999;border: 0px solid transparent;">取消</button>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="addWord" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">新建文档</h1>
+            </div>
+            <div class="modal-body">
+                <FORM method="post" enctype="multipart/form-data" class="form" role="form" action="{:url('index/Admin/adminWordUpload')}">
+                    <div class="form-group">
+                        <label for="inputfile">文件输入</label>
+                        <INPUT type="file" name="file" id="inputfile"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">是否是流程文档</label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="0">是
+                        </label>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="-1">否<br/>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="introduction">文档介绍</label><br/>
+                        <textarea class="form-control" rows="3" name="word_introduction"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="audit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">文档审批</h1>
+            </div>
+            <div class="modal-body">
+                <FORM method="post" enctype="multipart/form-data" class="form" role="form" action="{:url('index/Admin/adminWordUpload')}">
+                    <div class="form-group">
+                        <label for="inputfile">文件名</label><br/>
+                        <label for="">{$value.word_name}</label>
+                        <INPUT type="hidden" name="word_name" value="{$value.word_name}">
+                        <input type="hidden" name="word_id" value="{$value.word_id}">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">审批流程</label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="0" disabled>起草<br/>
+                        </label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="1" disabled>修改
+                        </label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="2" disabled>部长审核<br/>
+                        </label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="3">管理员审核<br/>
+                        </label><br/>
+                        <label class="form-radio">
+                            <input type="radio" name="word_state" value="4">归档<br/>
+                        </label><br/>
+                    </div>
+                    <button type="submit" class="btn btn-default">提交</button>
                 </form>
             </div>
         </div>

@@ -91,44 +91,36 @@ class AdminModel extends BaseModel
     }
     //添加部门
     public function depAdd($data_add){
-        $data = array(
-            'dep_name' => $data_add['dep_name'],
-            'dep_place' => $data_add['dep_place'],
-            'dep_leader' => $data_add['dep_leader'],
-            'dep_level' => $data_add['dep_level'],
-            'dep_pre' => $data_add['dep_pre']
-        );
-        return Db::table('hit_department')->insert($data);
+        return Db::table('hit_department')->insert($data_add);
     }
 
     //修改部门信息
     public function depEdit($data_edit){
-        $data = array(
-            'dep_name' => $data_edit['dep_name'],
-            'dep_place' => $data_edit['dep_place'],
-            'dep_leader' => $data_edit['dep_leader'],
-            'dep_level' => $data_edit['dep_level'],
-            'dep_pre' => $data_edit['dep_pre']
-        );
         $update = array(
             'dep_name' => $data_edit['dep_name']
         );
-        $res1 = Db::table('hit_department')->update($data);
-        $res2 = Db::table('user_department')->update($update);
-        return $res1 & $res2;
+        $is_exists = Db::table('user_department')->where('dep_id',$data_edit['dep_id'])->find();
+        if($is_exists == null){
+            return Db::table('hit_department')->where('dep_id',$data_edit['dep_id'])->update($data_edit);
+        }
+        else{
+            $res1 = Db::table('hit_department')->where('dep_id',$data_edit['dep_id'])->update($data_edit);
+            $res2 = Db::table('user_department')->where('dep_id',$data_edit['dep_id'])->update($update);
+            return $res1 & $res2;
+        }
     }
 
     //删除部门
-    public function depDelete($dep_name){
-        $is_null = Db::table('user_department')->where('dep_name',$dep_name)->find();
+    public function depDelete($dep_id){
+        $is_null = Db::table('user_department')->where('dep_id',$dep_id)->find();
         if($is_null == null){
-            $is_null1 = Db::table('hit_department')->where('dep_name',$dep_name)->find();
+            $is_null1 = Db::table('hit_department')->where('dep_id',$dep_id)->find();
             if($is_null1 == null){
                 $this->error['state'] = -1;
                 $this->error['msg'] = '要删除的部门不存在';
                 return $this->error;
             }
-            return Db::table('hit_department')->where('dep_name',$dep_name)->delete();
+            return Db::table('hit_department')->where('dep_id',$dep_id)->delete();
         }else{
             $this->error['state'] = -1;
             $this->error['msg'] = '要删除的部门存在用户，无法删除';
@@ -138,23 +130,22 @@ class AdminModel extends BaseModel
 
     //角色查询
     public function roleQuery(){
-        return Db::table('hit_role')->group('role_name')->select();
+        return Db::table('hit_role')->select();
     }
 
     //给用户分配角色
     public function roleAdd($data_add){
-        $is_exists = Db::table('hit_role')->where("role_user_id",$data_add['role_user_id'])->find();
+        $is_exists = Db::table('hit_role')->where("role_user_id",$data_add['user_id'])->find();
         if($is_exists != null){
             $this->error['state'] = -1;
             $this->error['msg'] = '角色已存在';
             return $this->error;
         }
-        $data = array(
+        $update = [
             'role_name' => $data_add['role_name'],
-            'role_user_id' => $data_add['role_user_id'],
-            'role_state' => $data_add['role_state']
-        );
-        return Db::table('hit_role')->insert($data);
+            'role_user_id' => $data_add['user_id']
+        ];
+        return Db::table('hit_role')->insert($data_add);
     }
 
     //剥夺某用户的角色
@@ -181,7 +172,14 @@ class AdminModel extends BaseModel
 
     public function depList(){
         return Db::table('hit_department')
-            ->join('user_department','hit_department.user_id = user_department.user_id')
+//            ->join('user_department','hit_department.dep_id = user_department.dep_id')
             ->select();
+    }
+
+    public function messageAdd($add_data){
+        $tmp = [
+            'user_msg' => $add_data['message']
+        ];
+        return Db::table('hit_user')->where('user_id',$add_data['user_id'])->update($tmp);
     }
 }

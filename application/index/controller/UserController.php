@@ -89,6 +89,16 @@ class UserController extends Controller
     {
         $user = new UserModel();
         $word_list = $user->userWordQuery(session('user_id'));
+        if($word_list == null){
+            $word_list = [
+                'word_name' => '空',
+                'word_id' => '空',
+                'word_place' => '空',
+                'word_state' => '空',
+                'word_introduction' => '空',
+                'word_startTime' => '空'
+            ];
+        }
         for($i = 0;$i < count($word_list);$i++){
             $offset = strpos($word_list[$i]['word_place'],'\\');
             $word_list[$i]['word_place'] = substr($word_list[$i]['word_place'],0,$offset+1);
@@ -223,5 +233,25 @@ class UserController extends Controller
         }else{
             $this->success("修改成功");
         }
+    }
+
+    public function messageRead(){
+        $flag = Request::instance()->param();
+        if(isset($flag['read']) && $flag['read'] == '1'){
+            $user = new UserModel();
+            $res = $user->messageRead(session('user_id'));
+            if($res == null){
+                $this->error('已读错误');
+            }
+            return $this->index();
+        }
+        else{
+            var_dump($flag);
+        }
+    }
+
+    public function exitLogin(){
+        session('user_id','');
+        $this->success('注销成功',url("index/index/index"));
     }
 }

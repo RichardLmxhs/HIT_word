@@ -71,4 +71,11 @@ class UserModel extends BaseModel
             return $this->error;
         }
     }
+
+    public function messageRead($user_id){
+        $msg = Db::table('hit_user')->where('user_id',$user_id)->find();
+        $update = ['user_msg' => '','user_msg_history' => $msg['user_msg'].'<br/>'.$msg['user_msg_history']];
+        $res1 = Db::table('hit_user')->where('user_id',$user_id)->update($update);
+        return $res1;
+    }
 }

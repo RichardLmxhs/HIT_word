@@ -54,7 +54,15 @@
             <h3 class="text-left">
                 我的消息
             </h3>
-
+            {if $user_data.user_msg != null}
+            <h4>{$user_data.user_msg}</h4>
+            <a href="{:url('index/user/messageRead','read=1')}">
+            <button type="button" class="btn btn-default btn-primary" role="button">
+                消息已读
+            </button></a>
+            {else /}
+            没有未读消息
+            {/if}
         </div>
     </div>
 </div>

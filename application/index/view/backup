@@ -1,0 +1,16 @@
+<div class="form-group">
+                        <label for="">用户</label>
+                        <select class="form-control" name="user_id">
+                            {volist name="user_list" id="value"}
+                            <option value="{$value.user_id}">{$value.user_name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">角色</label>
+                        <select class="form-control" name="role_name">
+                            {volist name="role_list" id="value"}
+                            <option value="{$value.role_name}">{$value.role_name}</option>
+                            {/volist}
+                        </select>
+                    </div>

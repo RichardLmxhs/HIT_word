@@ -1,10 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{include file="include/admin_head" /}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <table class="table table-striped">
+                <caption>部门管理<br/><br/>
+                    <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#addDep">
+                        新建部门
+                    </button></caption>
+                <thead>
+                <tr>
+                    <th>部门编号</th>
+                    <th>部门名</th>
+                    <th>部门位置</th>
+                    <th>部长</th>
+                    <th>上级部门</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                {volist name="dep_list" id="value"}
+                <tbody>
+                <tr>
+                    <th>{$value.dep_id}</th>
+                    <th>{$value.dep_name}</th>
+                    <th>{$value.dep_place}</th>
+                    <th>{$value.dep_leader}</th>
+                    <th>{if $value.dep_pre == null}无{else /}{$value.dep_pre}{/if}</th>
+                    <th>
+                        <a href="{:url('index/admin/depDel','dep_id='.$value.dep_id)}">
+                        <button type="button" class="btn btn-default btn-primary" role="button">
+                            删除
+                        </button></a>
+                        <button type="button" class="btn btn-default btn-primary" role="button" onclick="values({$value.dep_id})">
+                            修改
+                        </button>
+                    </th>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
+<div id="addDep" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">添加新部门</h1>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" action="{:url('index/admin/depAdd')}" method="post">
+                    <div class="form-group">
+                        <label for="">部门编号</label>
+                        <input class="form-control" type="text" name="dep_id" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部门名</label>
+                        <input class="form-control" type="text" name="dep_name" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部门位置</label>
+                        <input class="form-control" type="text" name="dep_place" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部长id</label>
+                        <input class="form-control" type="text" name="dep_leader" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">上级部门</label>
+                        <input class="form-control" type="text" name="dep_pre" value="">
+                    </div>
+                    <button type="submit" class="btn btn-default">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('#editDep').modal("hide");
+    });
+    function values(ID){
+        $('#dep_id').val(ID);
+        $('#editDep').modal('show');
+    }
+</script>
+<div id="editDep" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h1 class="text-center">修改部门</h1>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" action="{:url('index/admin/depEdit')}" method="post">
+                    <div class="form-group">
+                        <label for="">部门编号</label>
+                        <input class="form-control" type="text" name="dep_id" value="" id="dep_id">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部门名</label>
+                        <input class="form-control" type="text" name="dep_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部门位置</label>
+                        <input class="form-control" type="text" name="dep_place" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">部长id</label>
+                        <input class="form-control" type="text" name="dep_leader" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">上级部门</label>
+                        <input class="form-control" type="text" name="dep_pre" value="">
+                    </div>
+                    <button type="submit" class="btn btn-default">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
