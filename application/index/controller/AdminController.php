@@ -21,11 +21,13 @@ class AdminController extends Controller
 
     public function userManageView(){
         $admin = new AdminModel();
-        $data = $admin->userDepList();
+        $data = $admin->userDepRoleList();
         $dep_list = $admin->depList();
+        $role_list = $admin->roleList();
 //        var_dump($data);
         $this->assign("user_list",$data);
         $this->assign("dep_list",$dep_list);
+        $this->assign('role_list',$role_list);
         return $this->fetch('userManage');
     }
 
@@ -349,24 +351,39 @@ class AdminController extends Controller
 
     public function roleAssign(){
         $post = Request::instance()->post();
-//        $rule = [
-//            'role_name' => "require",
-//            'user_id' => 'require'
-//        ];
-//        $validate = new Validate($rule);
-//        if(!$validate->check($post)){
-//            $this->error($validate->getError());
-//        }else{
-//            $admin = new AdminModel();
-//            $res = $admin->roleAdd($post);
-//            if(!$res){
-//                $this->error('失败');
-//            }else{
-//                $this->success('成功',url('index/admin/adminRoleManageView'));
-//            }
-//        }
+        $rule = [
+            'role_name' => "require",
+            'role_state' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if(!$validate->check($post)){
+            $this->error($validate->getError());
+        }else{
+            $state = '0000';
+            for($i = 0;$i < count($post['role_state']);$i++){
+                $state = $state | $post['role_state'][$i];
+            }
+            $post['role_state'] = $state;
+            $admin = new AdminModel();
+            $res = $admin->roleAdd($post);
+            if(isset($res['state']) && $res['state'] == -1){
+                $this->error($res['msg']);
+            }
+            $this->success('添加成功',url('index/admin/adminRoleManageView'));
+        }
+    }
 
-//        var_dump($post);
+    public function roleDel(){
+        $get = Request::instance()->param();
+        if(!isset($get['role_name']) || $get['role_name'] == null){
+            $this->error("参数错误");
+        }
+        $admin = new AdminModel();
+        $res = $admin->roleDel($get['role_name']);
+        if(isset($res['state']) && $res['state'] == -1){
+            $this->error($res['msg']);
+        }
+        $this->success('删除成功',url('index/admin/adminRoleManageView'));
     }
 
     public function depAdd(){
@@ -466,6 +483,25 @@ class AdminController extends Controller
         $admin = new AdminModel();
         $res = $admin->userDepEdit($post);
         if(isset($res['state']) && $res['state'] == -1){
+            $this->error($res['msg']);
+        }else{
+            $this->success('修改成功',url('index/admin/userManageView'));
+        }
+    }
+
+    public function userRoleAssgin(){
+        $post = Request::instance()->post();
+        $rule = [
+            'user_id' => 'require',
+            'role_name' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if(!$validate->check($post)){
+            $this->error($validate->getError());
+        }
+        $admin = new AdminModel();
+        $res = $admin->userRoleAssgin($post);
+        if(!$res){
             $this->error($res['msg']);
         }else{
             $this->success('修改成功',url('index/admin/userManageView'));

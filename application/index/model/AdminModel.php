@@ -13,16 +13,23 @@ class AdminModel extends BaseModel
             ->select();
     }
 
-    public function userDepList(){
+    //用户+部门+角色查询
+    public function userDepRoleList(){
         $res =  Db::table('hit_user')->select();
         for($i = 0;$i < count($res);$i++){
             $user_id = $res[$i]['user_id'];
-            $res1 = Db::table('user_department')->where('user_id',$user_id)->value('dep_name');
-            $res[$i]['dep_name'] = $res1;
-//            $dep_name = ['dep_name' => $res1];
-//            array_push($res[$i],$dep_name);
+            $dep_name = Db::table('user_department')->where('user_id',$user_id)->value('dep_name');
+            $res[$i]['dep_name'] = $dep_name;
+
+            $role_name = Db::table('user_role')->where('user_id',$user_id)->value('role_name');
+            $res[$i]['role_name'] = $role_name;
         }
         return $res;
+    }
+
+    //角色查询
+    public function roleList(){
+        return Db::table('hit_role')->select();
     }
 
     //管理员查询
@@ -146,20 +153,33 @@ class AdminModel extends BaseModel
     public function roleQuery(){
         return Db::table('hit_role')->select();
     }
+    public function roleQueryById($user_id){
+        return Db::table('hit_role')
+            ->join('user_role','user_role.role_name=hit_role.role_name')
+            ->where('user_id',$user_id)
+            ->find();
+    }
 
-    //给用户分配角色
+    //新建角色
     public function roleAdd($data_add){
-        $is_exists = Db::table('hit_role')->where("role_user_id",$data_add['user_id'])->find();
+        $is_exists = Db::table('hit_role')->where('role_name',$data_add['role_name'])->find();
         if($is_exists != null){
             $this->error['state'] = -1;
             $this->error['msg'] = '角色已存在';
             return $this->error;
         }
-        $update = [
-            'role_name' => $data_add['role_name'],
-            'role_user_id' => $data_add['user_id']
-        ];
         return Db::table('hit_role')->insert($data_add);
+    }
+
+    //删除角色
+    public function roleDel($name){
+        $is_exists = Db::table('hit_role')->where('role_name',$name)->find();
+        if($is_exists == null){
+            $this->error['state'] = -1;
+            $this->error['msg'] = '角色不存在';
+            return $this->error;
+        }
+        return Db::table('hit_role')->where('role_name',$name)->delete();
     }
 
     //剥夺某用户的角色
@@ -190,6 +210,7 @@ class AdminModel extends BaseModel
             ->select();
     }
 
+    //发送消息
     public function messageAdd($add_data){
         $tmp = [
             'user_msg' => $add_data['message']
@@ -197,6 +218,7 @@ class AdminModel extends BaseModel
         return Db::table('hit_user')->where('user_id',$add_data['user_id'])->update($tmp);
     }
 
+    //修改用户的部门
     public function userDepEdit($edit){
         $name = Db::table('hit_department')->where("dep_id",$edit['dep_id'])->value('dep_name');
         if($name == null){
@@ -210,5 +232,14 @@ class AdminModel extends BaseModel
         }else{
             return Db::table('user_department')->where('user_id',$edit['user_id'])->update($edit);
         }
+    }
+
+    //给用户分配角色
+    public function userRoleAssgin($data){
+        $is_exists = Db::table('user_role')->where('user_id',$data['user_id'])->find();
+        if($is_exists == null){
+            return Db::table('user_role')->insert($data);
+        }
+        return Db::table('user_role')->where('user_id',$data['user_id'])->update($data);
     }
 }

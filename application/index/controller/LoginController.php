@@ -35,6 +35,13 @@ class LoginController extends Controller
         } else {
             if ($user->userLogin($post['user_id'], $post['user_password'])) {
                 session('user_id', $post['user_id']);
+                $admin = new AdminModel();
+                $role = $admin->roleQueryById($post['user_id']);
+                if($role == null){
+                    session('role','0000');
+                }else{
+                    session('role',$role['role_state']);
+                }
                 $this->success("登录成功", url("User/index"));
             }
         }

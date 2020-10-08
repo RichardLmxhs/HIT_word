@@ -5,15 +5,15 @@
 
             <table class="table table-striped">
                 <caption>角色管理<br/><br/>
-                    <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#adduser">
-                    分配角色
+                    <button type="button" class="btn btn-default btn-primary" role="button" data-toggle="modal" data-target="#addRole">
+                    添加角色
                     </button>
                 </caption>
                 <thead>
                 <tr>
                     <th>角色名称</th>
-                    <th>角色所拥有的用户</th>
                     <th>角色权限</th>
+                    <th>角色描述</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -21,15 +21,15 @@
                 <tbody>
                 <tr>
                     <th>{$value.role_name}</th>
-                    <th>{if $value.role_user_id == null}无{else /}$value.role_user_id{/if}</th>
                     <th>
                         {if $value.role_state[0] == '1'}下载{else /}{/if}
                         {if $value.role_state[1] == '1'}&上传{else /}{/if}
                         {if $value.role_state[2] == '1'}&审批{else /}{/if}
                         {if $value.role_state[3] == '1'}&新建{else /}{/if}
                     </th>
+                    <th>{if $value.role_introduction == null}空{else /}{$value.role_introduction}{/if}</th>
                     <th>
-                        <a href="{:url()}">
+                        <a href="{:url('index/admin/roleDel','role_name='.$value.role_name)}">
                             <button type="button" class="btn btn-default btn-primary" role="button">
                                 删除
                             </button>
@@ -43,30 +43,30 @@
     </div>
 </div>
 
-<div id="adduser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="addRole" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h1 class="text-center">分配角色</h1>
+                <h1 class="text-center">添加角色</h1>
             </div>
             <div class="modal-body">
                 <form class="form-group" action="{:url('index/Admin/roleAssign')}" method="post">
                     <div class="form-group">
-                        <label for="">用户</label>
-                        <select class="form-control" name="user_id">
-                            {volist name="user_list" id="value"}
-                            <option value="{$value.user_id}">{$value.user_name}</option>
-                            {/volist}
-                        </select>
+                        <label for="">角色名</label>
+                        <input class="form-control" name="role_name" >
                     </div>
                     <div class="form-group">
-                        <label for="">角色</label>
-                        <select class="form-control" name="role_name">
-                            {volist name="role_list" id="value"}
-                            <option value="{$value.role_name}">{$value.role_name}</option>
-                            {/volist}
-                        </select>
+                        <label for="">角色权限</label>
+                        <br/>
+                        <input type="checkbox" name="role_state[]" value="1000"/>下载<br/>
+                        <input type="checkbox" name="role_state[]" value="0100"/>上传<br/>
+                        <input type="checkbox" name="role_state[]" value="0010"/>审批<br/>
+                        <input type="checkbox" name="role_state[]" value="0001"/>新建<br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="">角色描述</label>
+                        <textarea class="form-control" rows="3" name="role_introduction"></textarea>
                     </div>
                     <div class="text-right">
                         <button class="btn btn-primary" type="submit" style="background-color: #3a8cd2b3;border: 0px solid transparent;">提交</button>
