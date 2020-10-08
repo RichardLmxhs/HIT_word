@@ -21,8 +21,11 @@ class AdminController extends Controller
 
     public function userManageView(){
         $admin = new AdminModel();
-        $data = $admin->userList();
+        $data = $admin->userDepList();
+        $dep_list = $admin->depList();
+//        var_dump($data);
         $this->assign("user_list",$data);
+        $this->assign("dep_list",$dep_list);
         return $this->fetch('userManage');
     }
 
@@ -447,5 +450,25 @@ class AdminController extends Controller
     public function exitLogin(){
         session('admin_id','');
         $this->success('注销成功',url("index/index/index"));
+    }
+
+    public function userDepEdit(){
+        $post = Request::instance()->post();
+//        var_dump($post);
+        $rule = [
+            'user_id' => 'require',
+            'dep_id' => 'require'
+        ];
+        $validate = new Validate($rule);
+        if(!$validate->check($post)){
+            $this->error($validate->getError());
+        }
+        $admin = new AdminModel();
+        $res = $admin->userDepEdit($post);
+        if(isset($res['state']) && $res['state'] == -1){
+            $this->error($res['msg']);
+        }else{
+            $this->success('修改成功',url('index/admin/userManageView'));
+        }
     }
 }

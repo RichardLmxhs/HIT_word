@@ -8,7 +8,21 @@ use think\Model;
 class AdminModel extends BaseModel
 {
     public function userList(){
-        return Db::table('hit_user')->select();
+        return Db::table('hit_user')
+//            ->join('user_department','hit_user.user_id = user_department.user_id',"Left")
+            ->select();
+    }
+
+    public function userDepList(){
+        $res =  Db::table('hit_user')->select();
+        for($i = 0;$i < count($res);$i++){
+            $user_id = $res[$i]['user_id'];
+            $res1 = Db::table('user_department')->where('user_id',$user_id)->value('dep_name');
+            $res[$i]['dep_name'] = $res1;
+//            $dep_name = ['dep_name' => $res1];
+//            array_push($res[$i],$dep_name);
+        }
+        return $res;
     }
 
     //管理员查询
@@ -181,5 +195,20 @@ class AdminModel extends BaseModel
             'user_msg' => $add_data['message']
         ];
         return Db::table('hit_user')->where('user_id',$add_data['user_id'])->update($tmp);
+    }
+
+    public function userDepEdit($edit){
+        $name = Db::table('hit_department')->where("dep_id",$edit['dep_id'])->value('dep_name');
+        if($name == null){
+            $this->error['state'] = -1;
+            $this->error['msg'] = '部门错误';
+            return $this->error;
+        }
+        $had_assgin = Db::table('user_department')->where('user_id',$edit['user_id'])->find();
+        if($had_assgin == null){
+            return Db::table('user_department')->insert($edit);
+        }else{
+            return Db::table('user_department')->where('user_id',$edit['user_id'])->update($edit);
+        }
     }
 }
